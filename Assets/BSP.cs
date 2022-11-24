@@ -46,6 +46,7 @@ public class BSP : MonoBehaviour
     {
         Mesh mesh;
 
+        //reseteo el estado para que loops 
         for (int i = 0; i < objects.Length; i++)
         {
             objects[i].GetComponent<MeshRenderer>().enabled = true;
