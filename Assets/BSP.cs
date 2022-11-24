@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -7,9 +8,10 @@ public class BSP : MonoBehaviour
     [SerializeField] Object[] objects;
     private IdentifySideOnPlane _identifySideOnPlane;
     private Material _renderMat;
-
+    private String[] _tags;
     void Start()
     {
+        _tags = UnityEditorInternal.InternalEditorUtility.tags;
         objects = FindObjectsOfType(typeof(IdentifySideOnPlane));
     }
 
@@ -17,6 +19,7 @@ public class BSP : MonoBehaviour
     {
         SortObjectsArray();
         CheckOverlaps();
+        CheckActiveRoom();
     }
 
     void SortObjectsArray()
@@ -80,7 +83,20 @@ public class BSP : MonoBehaviour
 
     void CheckActiveRoom()
     {
-        
+        foreach (var t in objects)
+        {
+            if (t.GetComponent<MeshRenderer>().enabled)
+            {
+                EnableTaggedRoom(t.GameObject().tag);
+            }
+        }
     }
 
+    void EnableTaggedRoom(String tag)
+    {
+        foreach (var t in objects)
+        {
+            if (t.GameObject().CompareTag(tag)) t.GetComponent<MeshRenderer>().enabled = true;
+        } 
+    }
 }
