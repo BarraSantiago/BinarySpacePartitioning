@@ -360,6 +360,7 @@
 "Assets/BSP.cs"
 "Assets/IdentifySideOnPlane.cs"
 "Assets/PlaneCreator.cs"
+"Assets/Room.cs"
 -langversion:9.0
 
 /deterministic

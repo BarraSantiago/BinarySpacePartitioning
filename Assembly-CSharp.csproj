@@ -42,8 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\IdentifySideOnPlane.cs" />
+     <Compile Include="Assets\Room.cs" />
      <Compile Include="Assets\PlaneCreator.cs" />
      <Compile Include="Assets\BSP.cs" />
+     <Compile Include="Assets\PlayerView.cs" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

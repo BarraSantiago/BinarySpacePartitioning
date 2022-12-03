@@ -5,21 +5,23 @@ public class IdentifySideOnPlane : MonoBehaviour
 {
     [SerializeField] private PlaneCreator[] planes;
     public bool isActive;
-    private Mesh _mesh;
+    private Mesh _meshFilter;
     private Vector3[] _vertices;
     private Vector3[] _objectVertices;
-    private GameObject _myObject;
     private Material _renderMat;
     private int _color1;
-
+    public Mesh GetMesh => _meshFilter;
     [SerializeField] public float minX, maxX, minY, maxY, minZ, maxZ;
+
+    private void Awake()
+    {
+        _renderMat = GetComponent<MeshRenderer>().material;
+        _meshFilter = GetComponent<MeshFilter>().mesh;
+    }
 
     public void Start()
     {
-        _myObject = gameObject;
-        _mesh = _myObject.GetComponent<MeshFilter>().mesh;
-        _objectVertices = new Vector3[_mesh.vertices.Length];
-        _renderMat = GetComponent<MeshRenderer>().material;
+        _objectVertices = new Vector3[_meshFilter.vertices.Length];
         _color1 = Shader.PropertyToID("_Color");
     }
 
@@ -51,35 +53,46 @@ public class IdentifySideOnPlane : MonoBehaviour
 
     void CheckInsideOfBounds()
     {
-        _vertices = _mesh.vertices;
-
-        _mesh = _myObject.GetComponent<MeshFilter>().mesh;
+        _vertices = _meshFilter.vertices;
 
         for (var i = 0; i < _vertices.Length; i++)
         {
             _objectVertices[i] = transform.TransformPoint(_vertices[i]);
         }
 
-        foreach (var t in planes)
-        {
-            int counter = 0;
-            foreach (var t1 in _objectVertices)
-            {
-                if (!t.Plane.GetSide(t1))
-                {
-                    counter++;
-                }
-            }
+        CheckFrustum();
+    }
 
-            if (counter >= _mesh.vertices.Length)
+    public bool CheckFrustum()
+    {
+        foreach (PlaneCreator t in planes)
+        {
+            if (IsInFrustum(t))
             {
                 isActive = false;
                 _renderMat.SetColor(_color1, Color.red);
-                break;
+                return false;
             }
 
             isActive = true;
             _renderMat.SetColor(_color1, Color.green);
         }
+
+        return true;
+    }
+
+    public bool IsInFrustum(PlaneCreator planeCreator)
+    {
+        int counter = 0;
+        foreach (Vector3 t1 in _objectVertices)
+        {
+            if (!planeCreator.Plane.GetSide(t1))
+            {
+                counter++;
+            }
+        }
+
+        return counter >= _meshFilter.vertices.Length;
+
     }
 }
